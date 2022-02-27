@@ -29,7 +29,7 @@ fun MemeTemplate(meme: Meme,onTextClicked:()->Unit,onImageClicked:()->Unit) {
     Column(
         modifier= Modifier
             .background(Color.White)
-            .padding(meme.padding?.dp?:12.dp)
+            .padding(meme.padding?.dp ?: 12.dp)
             .fillMaxWidth()
     ) {
         Text(
@@ -96,7 +96,7 @@ fun MemeEditorAppBar(
         actions = {
             IconButton(onClick = onSave) {
                 Icon(
-                    imageVector = Icons.Default.Build,
+                    painter= painterResource(id = R.drawable.ic_save),
                     contentDescription = null,
                     tint = MaterialTheme.colors.primary
                 )
