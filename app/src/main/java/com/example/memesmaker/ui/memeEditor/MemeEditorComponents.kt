@@ -129,6 +129,7 @@ fun MemeEditorAppBar(
 
 @Composable
 fun MemeTools(
+    currentTool:Tools,
     onToolClicked:(Tools)->Unit
 ) {
     val scrollState = rememberScrollState()
@@ -138,7 +139,8 @@ fun MemeTools(
             .fillMaxWidth(),
     ) {
         getAllTools().forEach {
-            ToolsButton(tool = it) {
+            val isSelected=currentTool==it
+            ToolsButton(tool = it,isSelected = isSelected) {
                 onToolClicked(it)
             }
         }
@@ -148,8 +150,12 @@ fun MemeTools(
 @Composable
 fun ToolsButton(
     tool: Tools,
+    isSelected:Boolean,
     onClick:()->Unit
 ) {
+
+    val color=if(isSelected) MaterialTheme.colors.primary else MaterialTheme.colors.onSurface
+
     Row(
         modifier = Modifier
             .background(MaterialTheme.colors.background)
@@ -159,8 +165,8 @@ fun ToolsButton(
         verticalAlignment = Alignment.CenterVertically
     ) {
         val painter= painterResource(id = tool.icon)
-        Icon(painter = painter, contentDescription = null)
-        Text(text = tool.text)
+        Icon(painter = painter, contentDescription = null,tint=color)
+        Text(text = tool.text,color=color)
     }
 }
 

@@ -64,7 +64,7 @@ class MemeEditor: ComponentActivity() {
                 onImageClicked = {}
             )
             Divider()
-            MemeTools(onToolClicked = { vm.currentTool = it })
+            MemeTools(currentTool = vm.currentTool,onToolClicked = { vm.currentTool = it })
             CurrentTool()
         }
     }
