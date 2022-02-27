@@ -23,22 +23,32 @@ import com.example.memesmaker.R
 import com.example.memesmaker.data.Meme
 import com.example.memesmaker.data.Tools
 import com.example.memesmaker.data.getAllTools
+import com.example.memesmaker.ui.theme.DarkMemeBackground
+import com.example.memesmaker.ui.theme.LightMemeBackground
 
 @Composable
-fun MemeTemplate(meme: Meme,onTextClicked:()->Unit,onImageClicked:()->Unit) {
+fun MemeTemplate(
+    meme: Meme,
+    onTextClicked: () -> Unit,
+    onImageClicked: () -> Unit
+) {
+
+    val contentColor=if (meme.dark!!) LightMemeBackground else DarkMemeBackground
+    val backgroundColor=if (meme.dark) DarkMemeBackground else LightMemeBackground
+
     Column(
         modifier= Modifier
-            .background(Color.White)
+            .background(backgroundColor)
             .padding(meme.padding?.dp ?: 12.dp)
             .fillMaxWidth()
     ) {
         Text(
             text = meme.text!!,
             fontSize = meme.textSize?.sp?:24.sp,
-            color = Color(meme.textColor!!),
             modifier = Modifier.clickable {
                 onTextClicked()
-            }
+            },
+            color = contentColor
         )
 
         val image = meme.picture?.asImageBitmap()
@@ -73,7 +83,8 @@ fun MemeTemplate(meme: Meme,onTextClicked:()->Unit,onImageClicked:()->Unit) {
             text = meme.credits!!,
             fontWeight = FontWeight.Bold,
             fontStyle = FontStyle.Italic,
-            modifier=Modifier.align(Alignment.End)
+            modifier=Modifier.align(Alignment.End),
+            color=contentColor
         )
 
     }
@@ -85,6 +96,8 @@ fun MemeEditorAppBar(
     onBack:()->Unit,
     onSave:()->Unit,
     title:String,
+    isDark:Boolean?,
+    onDarkSwitched:(Boolean)->Unit
 ) {
     TopAppBar(
         title={ Text(text = title) },
@@ -94,6 +107,12 @@ fun MemeEditorAppBar(
             }
         },
         actions = {
+
+            IconButton(onClick = {onDarkSwitched(!isDark!!)}){
+                val iconId=if (isDark!!) R.drawable.ic_day else R.drawable.ic_night
+                Icon(painter = painterResource(id = iconId), contentDescription = null)
+            }
+
             IconButton(onClick = onSave) {
                 Icon(
                     painter= painterResource(id = R.drawable.ic_save),

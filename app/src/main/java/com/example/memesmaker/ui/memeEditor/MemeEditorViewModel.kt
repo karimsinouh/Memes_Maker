@@ -43,4 +43,8 @@ class MemeEditorViewModel: ViewModel() {
         meme=meme.copy(padding = value)
     }
 
+    fun onDarkSwitched(value: Boolean) {
+        meme=meme.copy(dark = value)
+    }
+
 }

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.toArgb
 import com.example.memesmaker.data.Tools
@@ -34,7 +33,11 @@ class MemeEditor: ComponentActivity() {
                         MemeEditorAppBar(
                             onBack = ::finish,
                             onSave = { },
-                            title = vm.meme.memeName?:""
+                            title = vm.meme.memeName?:"",
+                            isDark = vm.meme.dark,
+                            onDarkSwitched = {
+                                vm.onDarkSwitched(it)
+                            }
                         )
                     }
                 ) {
@@ -71,12 +74,10 @@ class MemeEditor: ComponentActivity() {
         when(vm.currentTool){
             Tools.TEXT -> MemeTextTool()
             Tools.TEXT_SIZE -> TextSizeTool()
-            Tools.TEXT_COLOR -> TODO()
             Tools.CREDITS -> CreditsTool()
             Tools.PICTURE -> TODO()
-            Tools.NONE -> {}
+            Tools.NONE -> Unit
             Tools.PADDING -> PaddingTool()
-            Tools.BACKGROUND -> TODO()
             Tools.IMAGE_HEIGHT -> ImageHeightTool()
             Tools.CORNERS -> CornersTool()
         }
