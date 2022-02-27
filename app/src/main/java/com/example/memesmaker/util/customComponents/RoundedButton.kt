@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
@@ -33,7 +34,7 @@ fun RoundedButton(
         .clip(CircleShape)
         .background(backgroundColor)
         .clickable(onClick = onClick)
-        .padding(12.dp)
+        .padding(8.dp)
 
     if (fullWidth)
         modifier2.fillMaxWidth()
@@ -46,7 +47,8 @@ fun RoundedButton(
             text = text,
             color = contentColor,
             modifier=if(fullWidth) Modifier.weight(0.9f) else Modifier.padding(horizontal = 8.dp),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold
         )
         icon?.let {
             Icon(

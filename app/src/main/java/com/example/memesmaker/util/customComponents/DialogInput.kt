@@ -4,12 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -46,11 +48,13 @@ fun DialogInput(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
+                fontSize = 22.sp
             )
 
             CustomInput(
-                modifier = Modifier.weight(0.9f).fillMaxWidth(),
+                modifier = Modifier
+                    .weight(0.9f)
+                    .fillMaxWidth(),
                 value=value2,
                 placeholder = placeholder
             ){
@@ -91,10 +95,16 @@ private fun CustomInput(
         BasicTextField(
             value = value,
             onValueChange = {onValueChanged(it)},
-            textStyle = TextStyle(textAlign = TextAlign.Center,fontWeight = FontWeight.Bold),
+            textStyle = TextStyle(
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f),
+            ),
             modifier= Modifier
                 .fillMaxWidth()
                 .padding(12.dp),
+            cursorBrush = SolidColor(MaterialTheme.colors.primary),
+
         )
 
     }
