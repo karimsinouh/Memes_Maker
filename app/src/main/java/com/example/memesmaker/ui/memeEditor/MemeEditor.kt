@@ -17,6 +17,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import com.example.memesmaker.data.Tools
 import com.example.memesmaker.ui.theme.MemesMakerTheme
@@ -64,28 +65,28 @@ class MemeEditor: ComponentActivity() {
 
 
                 Scaffold(
-                    topBar = {
-                        MemeEditorAppBar(
-                            onBack = ::finish,
-                            onSave = { },
-                            title = vm.meme.memeName?:"",
-                            isDark = vm.meme.dark,
-                            onDarkSwitched = {
-                                vm.onDarkSwitched(it)
-                            }
-                        )
-                    }
-                ) {
-
-                    Content()
-
-                }
+                    topBar = { ThisTopBar() },
+                    content = { Content() }
+                )
 
             }
 
         }
     }
 
+
+    @Composable
+    private fun ThisTopBar() {
+        MemeEditorAppBar(
+            onBack = ::finish,
+            onSave = { },
+            title = vm.meme.memeName?:"",
+            isDark = vm.meme.dark,
+            onDarkSwitched = {
+                vm.onDarkSwitched(it)
+            }
+        )
+    }
 
     @Composable
     private fun Content() {
@@ -97,7 +98,7 @@ class MemeEditor: ComponentActivity() {
                     vm.currentTool=Tools.TEXT
                 },
                 onImageClicked = {
-                    launcher.launch("image/*")
+                   launcher.launch("image/*")
                 }
             )
             Divider()
@@ -112,7 +113,6 @@ class MemeEditor: ComponentActivity() {
             Tools.TEXT -> MemeTextTool()
             Tools.TEXT_SIZE -> TextSizeTool()
             Tools.CREDITS -> CreditsTool()
-            Tools.PICTURE -> Unit
             Tools.NONE -> Unit
             Tools.PADDING -> PaddingTool()
             Tools.IMAGE_HEIGHT -> ImageHeightTool()
@@ -184,16 +184,9 @@ class MemeEditor: ComponentActivity() {
         SliderTool(
             toolName = vm.currentTool.text,
             value = vm.meme.corners,
-            range = 0f .. 70f,
+            range = 0f .. 100f,
             onTextSizeChange = { vm.setCorners(it) }
         )
-    }
-
-    @Composable
-    fun OpenImageCropper() {
-
-         
-
     }
 
 }

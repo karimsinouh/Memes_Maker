@@ -11,7 +11,6 @@ enum class Tools(
     TEXT("Meme Text",R.drawable.ic_text_size),
     TEXT_SIZE("Text Size",R.drawable.ic_text_size),
     CREDITS("Credits",R.drawable.ic_email),
-    PICTURE("Picture",R.drawable.ic_image),
     NONE("None",0),
     PADDING("Padding",R.drawable.ic_padding),
     IMAGE_HEIGHT("Image Height",R.drawable.ic_height),
@@ -21,7 +20,6 @@ enum class Tools(
 fun getAllTools()= listOf(
     Tools.TEXT_SIZE,
     Tools.CREDITS,
-    Tools.PICTURE,
     Tools.PADDING,
     Tools.IMAGE_HEIGHT,
     Tools.CORNERS,
