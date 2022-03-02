@@ -1,8 +1,16 @@
 package com.example.memesmaker.ui.memeEditor
 
+import android.app.Activity
+import android.app.Instrumentation
+import android.content.Intent
+import android.content.pm.LauncherActivityInfo
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResult
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Divider
@@ -12,12 +20,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.toArgb
 import com.example.memesmaker.data.Tools
 import com.example.memesmaker.ui.theme.MemesMakerTheme
+import com.example.memesmaker.util.ImagePicker
 import com.example.memesmaker.util.customComponents.DialogInput
+import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageView
 
 class MemeEditor: ComponentActivity() {
 
 
     private val vm by viewModels<MemeEditorViewModel>()
+
+    private val imagePicker by lazy {
+        ImagePicker(this)
+    }
+
+
+    private lateinit var cropLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>
+
+    private lateinit var launcher:ManagedActivityResultLauncher<String, Uri?>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +47,21 @@ class MemeEditor: ComponentActivity() {
             MemesMakerTheme {
 
                 window.statusBarColor=MaterialTheme.colors.surface.toArgb()
+
+                launcher=rememberLauncherForActivityResult(contract = imagePicker.contract) {
+                    it?.let {
+                        imagePicker.openCrop(it,cropLauncher)
+                    }
+                }
+
+                cropLauncher =  rememberLauncherForActivityResult(contract = imagePicker.cropContract) {
+                    if (it.resultCode==Activity.RESULT_OK && it.data!=null){
+                        val uri=CropImage.getActivityResult(it.data).uri
+                        vm.setBitmap(uri,this)
+                    }
+                }
+
+
 
                 Scaffold(
                     topBar = {
@@ -61,7 +96,9 @@ class MemeEditor: ComponentActivity() {
                 onTextClicked = {
                     vm.currentTool=Tools.TEXT
                 },
-                onImageClicked = {}
+                onImageClicked = {
+                    launcher.launch("image/*")
+                }
             )
             Divider()
             MemeTools(currentTool = vm.currentTool,onToolClicked = { vm.currentTool = it })
@@ -75,7 +112,7 @@ class MemeEditor: ComponentActivity() {
             Tools.TEXT -> MemeTextTool()
             Tools.TEXT_SIZE -> TextSizeTool()
             Tools.CREDITS -> CreditsTool()
-            Tools.PICTURE -> TODO()
+            Tools.PICTURE -> Unit
             Tools.NONE -> Unit
             Tools.PADDING -> PaddingTool()
             Tools.IMAGE_HEIGHT -> ImageHeightTool()
@@ -150,6 +187,13 @@ class MemeEditor: ComponentActivity() {
             range = 0f .. 70f,
             onTextSizeChange = { vm.setCorners(it) }
         )
+    }
+
+    @Composable
+    fun OpenImageCropper() {
+
+         
+
     }
 
 }
