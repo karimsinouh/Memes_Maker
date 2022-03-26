@@ -7,5 +7,5 @@ val Purple500 = Color(0xFF4CAF50)
 val Purple700 = Color(0xFF388E3C)
 val Teal200 = Color(0xFF4CAF50)
 
-val LightMemeBackground=Color(0xFFEDF3ED)
-val DarkMemeBackground=Color(0xFF202220)
+val LightMemeBackground=Color(0xFFF1F1F1)
+val DarkMemeBackground=Color(0xFF202020)
