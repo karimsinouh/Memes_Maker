@@ -16,12 +16,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.viewinterop.AndroidView
 import com.example.memesmaker.data.Tools
 import com.example.memesmaker.ui.theme.MemesMakerTheme
 import com.example.memesmaker.util.ImagePicker
+import com.example.memesmaker.util.ViewToBitmap
 import com.example.memesmaker.util.customComponents.DialogInput
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
@@ -39,6 +40,8 @@ class MemeEditor: ComponentActivity() {
     private lateinit var cropLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>
 
     private lateinit var launcher:ManagedActivityResultLauncher<String, Uri?>
+
+    private var memeCaptureView: MutableState<MemeTemplateCustomView> ?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +82,9 @@ class MemeEditor: ComponentActivity() {
     private fun ThisTopBar() {
         MemeEditorAppBar(
             onBack = ::finish,
-            onSave = { },
+            onSave = {
+                     save()
+            },
             title = vm.meme.memeName?:"",
             isDark = vm.meme.dark,
             onDarkSwitched = {
@@ -88,23 +93,73 @@ class MemeEditor: ComponentActivity() {
         )
     }
 
+    private fun save(){
+        val bitmap=ViewToBitmap(memeCaptureView?.value!!)
+        vm.meme=vm.meme.copy(picture= bitmap)
+    }
+
     @Composable
     private fun Content() {
         Column {
             Divider()
-            MemeTemplate(
-                meme = vm.meme,
-                onTextClicked = {
-                    vm.currentTool=Tools.TEXT
-                },
-                onImageClicked = {
-                   launcher.launch("image/*")
-                }
-            )
+            MemeUi()
             Divider()
             MemeTools(currentTool = vm.currentTool,onToolClicked = { vm.currentTool = it })
             CurrentTool()
         }
+    }
+
+
+    @Composable
+    private fun MemeUi() {
+        memeCaptureView=remember{
+            mutableStateOf(MemeTemplateCustomView(
+                context = this,
+                meme = vm.meme,
+                onImageClicked = {
+                    launcher.launch("image/*")
+                },
+                onTextClicked = {
+                    vm.currentTool=Tools.TEXT
+                }
+            ))
+        }
+
+        AndroidView(
+            factory = {context ->
+                MemeTemplateCustomView(
+                    context = context,
+                    meme = vm.meme,
+                    onImageClicked = {
+                        launcher.launch("image/*")
+                    },
+                    onTextClicked = {
+                        vm.currentTool=Tools.TEXT
+                    }
+                ).apply {
+                    post {
+                        memeCaptureView?.value=this
+                    }
+                }
+            },
+            update = {
+                MemeTemplateCustomView(
+                    context = this,
+                    meme = vm.meme,
+                    onImageClicked = {
+                        launcher.launch("image/*")
+                    },
+                    onTextClicked = {
+                        vm.currentTool=Tools.TEXT
+                    }
+                ).apply {
+                    post {
+                        memeCaptureView?.value=this
+                    }
+                }
+            }
+        )
+
     }
 
     @Composable
