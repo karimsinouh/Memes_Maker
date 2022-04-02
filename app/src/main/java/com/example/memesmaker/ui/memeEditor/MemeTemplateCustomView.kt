@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,7 +29,7 @@ import com.example.memesmaker.ui.theme.LightMemeBackground
 
 class MemeTemplateCustomView(
     context: Context,
-    private val meme:Meme,
+    private val meme:MutableState<Meme>,
     private val onImageClicked:()->Unit,
     private val onTextClicked:()->Unit
 ):AbstractComposeView(context){
@@ -37,11 +38,13 @@ class MemeTemplateCustomView(
     override fun Content() {
 
         MemeTemplate(
-            meme = meme,
+            meme = meme.value,
             onTextClicked = onTextClicked,
             onImageClicked = onImageClicked
         )
 
     }
+
+
 
 }

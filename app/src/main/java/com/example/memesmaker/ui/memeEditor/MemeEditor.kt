@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.LauncherActivityInfo
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -41,7 +42,7 @@ class MemeEditor: ComponentActivity() {
 
     private lateinit var launcher:ManagedActivityResultLauncher<String, Uri?>
 
-    private var memeCaptureView: MutableState<MemeTemplateCustomView> ?=null
+    private lateinit var memeCaptureView: MutableState<MemeTemplateCustomView>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,6 +76,17 @@ class MemeEditor: ComponentActivity() {
             }
 
         }
+
+        memeCaptureView= mutableStateOf(MemeTemplateCustomView(
+            context = this,
+            meme = vm.meme,
+            onImageClicked = {
+                launcher.launch("image/*")
+            },
+            onTextClicked = {
+                vm.currentTool=Tools.TEXT
+            }
+        ))
     }
 
 
@@ -85,8 +97,8 @@ class MemeEditor: ComponentActivity() {
             onSave = {
                      save()
             },
-            title = vm.meme.memeName?:"",
-            isDark = vm.meme.dark,
+            title = vm.meme.value.memeName?:"",
+            isDark = vm.meme.value.dark,
             onDarkSwitched = {
                 vm.onDarkSwitched(it)
             }
@@ -94,8 +106,8 @@ class MemeEditor: ComponentActivity() {
     }
 
     private fun save(){
-        val bitmap=ViewToBitmap(memeCaptureView?.value!!)
-        vm.meme=vm.meme.copy(picture= bitmap)
+        val bitmap=ViewToBitmap(memeCaptureView.value)
+        vm.meme.value=vm.meme.value.copy(picture= bitmap)
     }
 
     @Composable
@@ -112,53 +124,12 @@ class MemeEditor: ComponentActivity() {
 
     @Composable
     private fun MemeUi() {
-        memeCaptureView=remember{
-            mutableStateOf(MemeTemplateCustomView(
-                context = this,
-                meme = vm.meme,
-                onImageClicked = {
-                    launcher.launch("image/*")
-                },
-                onTextClicked = {
-                    vm.currentTool=Tools.TEXT
-                }
-            ))
-        }
 
-        AndroidView(
-            factory = {context ->
-                MemeTemplateCustomView(
-                    context = context,
-                    meme = vm.meme,
-                    onImageClicked = {
-                        launcher.launch("image/*")
-                    },
-                    onTextClicked = {
-                        vm.currentTool=Tools.TEXT
-                    }
-                ).apply {
-                    post {
-                        memeCaptureView?.value=this
-                    }
+            AndroidView(
+                factory = {context ->
+                    memeCaptureView.value
                 }
-            },
-            update = {
-                MemeTemplateCustomView(
-                    context = this,
-                    meme = vm.meme,
-                    onImageClicked = {
-                        launcher.launch("image/*")
-                    },
-                    onTextClicked = {
-                        vm.currentTool=Tools.TEXT
-                    }
-                ).apply {
-                    post {
-                        memeCaptureView?.value=this
-                    }
-                }
-            }
-        )
+            )
 
     }
 
@@ -180,7 +151,7 @@ class MemeEditor: ComponentActivity() {
     private fun PaddingTool() {
         SliderTool(
             toolName = vm.currentTool.text,
-            value = vm.meme.padding,
+            value = vm.meme.value.padding,
             range = 0f .. 32f,
             onTextSizeChange = { vm.setPadding(it) }
         )
@@ -190,7 +161,7 @@ class MemeEditor: ComponentActivity() {
     private fun CreditsTool(){
         DialogInput(
             title = vm.currentTool.text,
-            value = vm.meme.credits?:"",
+            value = vm.meme.value.credits?:"",
             button = "Done",
             placeholder = "Enter Your name or instagram page...",
             onConfirm = { vm.setCredits(it) }
@@ -203,7 +174,7 @@ class MemeEditor: ComponentActivity() {
     private fun ImageHeightTool() {
         SliderTool(
             toolName = vm.currentTool.text,
-            value = vm.meme.imageHeight,
+            value = vm.meme.value.imageHeight,
             range = 100f..300f,
             onTextSizeChange = {
                 vm.setImageHeight(it)
@@ -215,7 +186,7 @@ class MemeEditor: ComponentActivity() {
     private fun MemeTextTool() {
         DialogInput(
             title = vm.currentTool.text,
-            value = vm.meme.text?:"",
+            value = vm.meme.value.text?:"",
             button = "Done",
             placeholder = vm.currentTool.text,
             onConfirm = { vm.setText(it) }
@@ -228,7 +199,7 @@ class MemeEditor: ComponentActivity() {
     private fun TextSizeTool() {
         SliderTool(
             toolName = vm.currentTool.text,
-            value = vm.meme.textSize,
+            value = vm.meme.value.textSize,
             range = 12f .. 40f,
             onTextSizeChange = { vm.setTextSize(it) }
         )
@@ -238,7 +209,7 @@ class MemeEditor: ComponentActivity() {
     private fun CornersTool() {
         SliderTool(
             toolName = vm.currentTool.text,
-            value = vm.meme.corners,
+            value = vm.meme.value.corners,
             range = 0f .. 100f,
             onTextSizeChange = { vm.setCorners(it) }
         )

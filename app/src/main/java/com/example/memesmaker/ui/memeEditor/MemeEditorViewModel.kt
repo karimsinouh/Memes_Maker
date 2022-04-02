@@ -13,17 +13,17 @@ import com.example.memesmaker.util.toBitmap
 
 class MemeEditorViewModel: ViewModel() {
 
-    var meme by mutableStateOf(Meme())
+    val meme = mutableStateOf(Meme())
 
     var currentTool by mutableStateOf(Tools.NONE)
 
     fun setText(text:String){
-        meme=meme.copy(text=text)
+        meme.value=meme.value.copy(text=text)
         unselectTools()
     }
 
     fun setCredits(credits:String){
-        meme=meme.copy(credits = credits)
+        meme.value=meme.value.copy(credits = credits)
         unselectTools()
     }
 
@@ -32,28 +32,28 @@ class MemeEditorViewModel: ViewModel() {
     }
 
     fun setTextSize(size:Float){
-        meme=meme.copy(textSize = size)
+        meme.value=meme.value.copy(textSize = size)
     }
 
     fun setCorners(size:Float){
-        meme=meme.copy(corners = size)
+        meme.value=meme.value.copy(corners = size)
     }
 
     fun setImageHeight(it: Float) {
-        meme=meme.copy(imageHeight = it)
+        meme.value=meme.value.copy(imageHeight = it)
     }
 
     fun setPadding(value:Float){
-        meme=meme.copy(padding = value)
+        meme.value=meme.value.copy(padding = value)
     }
 
     fun onDarkSwitched(value: Boolean) {
-        meme=meme.copy(dark = value)
+        meme.value=meme.value.copy(dark = value)
     }
 
     fun setBitmap(uri:Uri,context:Context){
         val bitmap=uri.toBitmap(context)
-        meme=meme.copy(picture = bitmap)
+        meme.value=meme.value.copy(picture = bitmap)
     }
 
 }
