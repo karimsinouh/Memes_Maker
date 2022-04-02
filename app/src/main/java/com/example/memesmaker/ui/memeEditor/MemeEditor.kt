@@ -106,8 +106,9 @@ class MemeEditor: ComponentActivity() {
     }
 
     private fun save(){
-        val bitmap=ViewToBitmap(memeCaptureView.value)
-        vm.meme.value=vm.meme.value.copy(picture= bitmap)
+        ViewToBitmap(memeCaptureView.value,window){
+            vm.meme.value=vm.meme.value.copy(picture= it)
+        }
     }
 
     @Composable
