@@ -4,12 +4,19 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -17,9 +24,11 @@ import com.example.memesmaker.ui.memeEditor.MemeEditor
 import com.example.memesmaker.ui.theme.MemesMakerTheme
 import com.example.memesmaker.util.customComponents.MessageScreen
 import com.example.memesmaker.util.customComponents.RoundedButton
+import com.example.memesmaker.R
 
 class MainActivity : ComponentActivity() {
 
+    private val vm by viewModels<MainViewModel>()
 
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,10 +40,8 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(
                     content={Content()},
-                    topBar = {
-                        MainTopBar()
-                    },
-                    backgroundColor = MaterialTheme.colors.background
+                    topBar = { MainTopBar() },
+                    backgroundColor = MaterialTheme.colors.background,
                 )
             }
         }
@@ -42,14 +49,19 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun Content() {
-        MessageScreen(
-            title= "It's a bit empty here",
-            text = "You haven't created any memes yet. All memes will be shown here"
-        ) {
-            RoundedButton(text = "Create") {
-                openEditorActivity()
+        if (vm.memesList.isEmpty()){
+            MessageScreen(
+                title= stringResource(R.string.bit_empty),
+                text = stringResource(R.string.no_memes_yet)
+            ) {
+                RoundedButton(text = stringResource(R.string.create)) {
+                    openEditorActivity()
+                }
             }
+            return
         }
+
+
     }
 
     private fun openEditorActivity(){
@@ -64,15 +76,23 @@ class MainActivity : ComponentActivity() {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Memes Maker",
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
+                        text = getString(R.string.app_name),
+                        fontWeight = FontWeight.Bold
                     )
                 },
-                actions = {},
+                actions = {
+                          IconButton(onClick = ::openEditorActivity) {
+                              Icon(Icons.Default.Add, null)
+                          }
+                },
                 backgroundColor = MaterialTheme.colors.surface,
                 contentColor = MaterialTheme.colors.onSurface,
-                elevation = 0.dp
+                elevation = 0.dp,
+                navigationIcon = {
+                    IconButton(onClick = ::openEditorActivity) {
+                        Icon(Icons.Default.Menu, null)
+                    }
+                }
             )
             Divider()
         }
