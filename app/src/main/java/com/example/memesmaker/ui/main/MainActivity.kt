@@ -5,8 +5,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -26,6 +32,7 @@ import com.example.memesmaker.ui.theme.MemesMakerTheme
 import com.example.memesmaker.util.customComponents.MessageScreen
 import com.example.memesmaker.util.customComponents.RoundedButton
 import com.example.memesmaker.R
+import com.example.memesmaker.ui.items.MemeItem
 
 class MainActivity : ComponentActivity() {
 
@@ -48,6 +55,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     private fun Content() {
 
@@ -65,6 +73,18 @@ class MainActivity : ComponentActivity() {
             return
         }
 
+        LazyVerticalGrid(
+            cells = GridCells.Fixed(2),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(12.dp),
+        ){
+            items(memes){meme->
+                MemeItem(memeEntity = meme) {
+
+                }
+            }
+        }
 
     }
 

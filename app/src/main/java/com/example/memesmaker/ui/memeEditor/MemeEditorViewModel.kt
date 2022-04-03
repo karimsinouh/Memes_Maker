@@ -71,8 +71,6 @@ class MemeEditorViewModel(app:Application): AndroidViewModel(app) {
 
     fun storeMeme(){
         val entity=MemeEntity(0,uri.toString())
-        Log.d("wtf","path: ${uri?.path}")
-        Log.d("wtf","string: ${uri.toString()}")
         viewModelScope.launch {
             db.memes().put(entity)
         }

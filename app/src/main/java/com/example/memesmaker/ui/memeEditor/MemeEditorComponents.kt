@@ -33,8 +33,8 @@ fun MemeTemplate(
     onImageClicked: () -> Unit
 ) {
 
-    val contentColor=if (meme.dark!!) LightMemeBackground else DarkMemeBackground
-    val backgroundColor=if (meme.dark) DarkMemeBackground else LightMemeBackground
+    val contentColor=if (meme.dark!!) Color.White else Color.Black
+    val backgroundColor=if (meme.dark) Color.Black else Color.White
 
     Column(
         modifier= Modifier
