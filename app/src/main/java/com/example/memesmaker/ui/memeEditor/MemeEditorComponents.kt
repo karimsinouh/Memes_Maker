@@ -158,7 +158,7 @@ fun ToolsButton(
 
     Row(
         modifier = Modifier
-            .background(MaterialTheme.colors.background)
+            .background(MaterialTheme.colors.surface)
             .clickable { onClick() }
             .padding(12.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),

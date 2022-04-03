@@ -8,12 +8,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.memesmaker.data.Meme
+import com.example.memesmaker.data.ScreenState
 import com.example.memesmaker.data.Tools
 import com.example.memesmaker.util.toBitmap
 
 class MemeEditorViewModel: ViewModel() {
 
     val meme = mutableStateOf(Meme())
+
+    var state by mutableStateOf(ScreenState.IDLE)
 
     var currentTool by mutableStateOf(Tools.NONE)
 
