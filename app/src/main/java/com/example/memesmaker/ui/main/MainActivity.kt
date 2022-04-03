@@ -9,30 +9,26 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.memesmaker.R
+import com.example.memesmaker.ui.items.MemeItem
 import com.example.memesmaker.ui.memeEditor.MemeEditor
 import com.example.memesmaker.ui.theme.MemesMakerTheme
 import com.example.memesmaker.util.customComponents.MessageScreen
 import com.example.memesmaker.util.customComponents.RoundedButton
-import com.example.memesmaker.R
-import com.example.memesmaker.ui.items.MemeItem
+import com.example.memesmaker.util.customComponents.customStickyHeader
 
 class MainActivity : ComponentActivity() {
 
@@ -73,19 +69,24 @@ class MainActivity : ComponentActivity() {
             return
         }
 
-        LazyVerticalGrid(
-            cells = GridCells.Fixed(2),
+        LazyColumn(
             verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(12.dp),
+            contentPadding = PaddingValues(12.dp)
         ){
-            items(memes){meme->
+
+            customStickyHeader("Created Memes")
+
+            items(
+                items=memes,
+                key={
+                    it.id
+                }
+            ){meme->
                 MemeItem(memeEntity = meme) {
 
                 }
             }
         }
-
     }
 
     private fun openEditorActivity(){

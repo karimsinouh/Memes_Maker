@@ -18,7 +18,7 @@ import com.example.memesmaker.database.MemeEntity
 fun MemeItem(memeEntity: MemeEntity,onClick:()->Unit) {
     val uri= Uri.parse(memeEntity.memePath)
     Card(
-        modifier = Modifier.clickable(onClick = onClick),
+        modifier = Modifier.clickable(onClick = onClick).fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
     ){
         AsyncImage(
