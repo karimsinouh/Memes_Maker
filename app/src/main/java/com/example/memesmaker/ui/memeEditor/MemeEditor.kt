@@ -24,10 +24,12 @@ import com.example.memesmaker.data.ScreenState
 import com.example.memesmaker.data.Tools
 import com.example.memesmaker.ui.theme.MemesMakerTheme
 import com.example.memesmaker.util.ImagePicker
+import com.example.memesmaker.util.SaveMemeToStorage
 import com.example.memesmaker.util.ViewToBitmap
 import com.example.memesmaker.util.customComponents.CenterProgress
 import com.example.memesmaker.util.customComponents.DialogInput
 import com.example.memesmaker.util.customComponents.MessageScreen
+import com.example.memesmaker.util.customComponents.RoundedButton
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 
@@ -46,6 +48,8 @@ class MemeEditor: ComponentActivity() {
     private lateinit var launcher:ManagedActivityResultLauncher<String, Uri?>
 
     private lateinit var memeCaptureView: MutableState<MemeTemplateCustomView>
+
+    private val saveMemeToStorage=SaveMemeToStorage()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,17 +77,27 @@ class MemeEditor: ComponentActivity() {
 
                 Scaffold(
                     topBar = {
-                        if(vm.state!=ScreenState.LOADING)
+                        if(vm.state==ScreenState.IDLE)
                             ThisTopBar()
                              },
                     content = {
                         when(vm.state){
                             ScreenState.LOADING -> CenterProgress()
                             ScreenState.DONE -> MessageScreen(
-                                title = "Done",
-                                text = "Your meme has been successfully created"
+                                title = "Congrats",
+                                text = "Your meme has been successfully created, you can share it with your friends if you want",
+                                button = {
+                                    RoundedButton(text = "Share") {
+
+                                    }
+                                }
                             )
-                            ScreenState.ERROR -> { }
+                            ScreenState.ERROR -> {
+                                MessageScreen(
+                                    title = "Error",
+                                    text = vm.state.message ?: "idk bro"
+                                )
+                            }
                             ScreenState.IDLE -> Content()
                         }
                     },
@@ -123,7 +137,18 @@ class MemeEditor: ComponentActivity() {
     private fun save(){
         vm.state=ScreenState.LOADING
         ViewToBitmap(memeCaptureView.value,window){
-            vm.meme.value=vm.meme.value.copy(picture= it)
+            saveMemeToStorage(this,it){result->
+
+                result.onSuccess {uri->
+                    vm.uri=uri
+                    vm.state=ScreenState.DONE
+                }
+
+                result.onFailure {
+                    vm.state=ScreenState.ERROR.apply { message=it.message }
+                }
+
+            }
         }
     }
 

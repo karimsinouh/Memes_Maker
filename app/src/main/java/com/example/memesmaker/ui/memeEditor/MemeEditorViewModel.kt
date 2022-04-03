@@ -15,6 +15,7 @@ import com.example.memesmaker.util.toBitmap
 class MemeEditorViewModel: ViewModel() {
 
     val meme = mutableStateOf(Meme())
+    var uri :Uri?=null
 
     var state by mutableStateOf(ScreenState.IDLE)
 
