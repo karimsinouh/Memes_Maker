@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
@@ -49,7 +50,10 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun Content() {
-        if (vm.memesList.isEmpty()){
+
+        val memes=vm.memesList.observeAsState().value ?: emptyList()
+
+        if (memes.isEmpty()){
             MessageScreen(
                 title= stringResource(R.string.bit_empty),
                 text = stringResource(R.string.no_memes_yet)
