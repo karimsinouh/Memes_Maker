@@ -143,6 +143,7 @@ class MemeEditor: ComponentActivity() {
 
                 result.onSuccess {uri->
                     vm.uri=uri
+                    vm.storeMeme()
                     vm.state=ScreenState.DONE
                 }
 
@@ -170,7 +171,7 @@ class MemeEditor: ComponentActivity() {
     private fun MemeUi() {
 
             AndroidView(
-                factory = {context ->
+                factory = {_ ->
                     memeCaptureView.value
                 }
             )
