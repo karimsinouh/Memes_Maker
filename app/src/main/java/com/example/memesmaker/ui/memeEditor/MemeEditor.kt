@@ -20,11 +20,13 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.viewinterop.AndroidView
+import com.example.memesmaker.R
 import com.example.memesmaker.data.ScreenState
 import com.example.memesmaker.data.Tools
 import com.example.memesmaker.ui.theme.MemesMakerTheme
 import com.example.memesmaker.util.ImagePicker
 import com.example.memesmaker.util.SaveMemeToStorage
+import com.example.memesmaker.util.ShareImage
 import com.example.memesmaker.util.ViewToBitmap
 import com.example.memesmaker.util.customComponents.CenterProgress
 import com.example.memesmaker.util.customComponents.DialogInput
@@ -84,11 +86,11 @@ class MemeEditor: ComponentActivity() {
                         when(vm.state){
                             ScreenState.LOADING -> CenterProgress()
                             ScreenState.DONE -> MessageScreen(
-                                title = "Congrats",
-                                text = "Your meme has been successfully created, you can share it with your friends if you want",
+                                title = "Congrats!",
+                                text = getString(R.string.meme_created),
                                 button = {
-                                    RoundedButton(text = "Share") {
-
+                                    RoundedButton(text = getString(R.string.share)) {
+                                        ShareImage(this,vm.uri)
                                     }
                                 }
                             )

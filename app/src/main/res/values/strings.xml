@@ -5,4 +5,7 @@
     <string name="create">Create</string>
     <string name="permission_required">Permission is required</string>
     <string name="something_went_wrong">Something Went Wrong</string>
+    <string name="share_meme">Share this meme</string>
+    <string name="share">Share</string>
+    <string name="meme_created">Your meme has been successfully created, you can share it with your friends if you want</string>
 </resources>
