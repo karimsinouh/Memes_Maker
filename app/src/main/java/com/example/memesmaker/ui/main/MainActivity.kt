@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
 
     private val vm by viewModels<MainViewModel>()
 
-    @ExperimentalMaterialApi
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -90,9 +90,11 @@ class MainActivity : ComponentActivity() {
             ){meme->
 
                 val boxModifier=if (vm.isSelected(meme.id))
-                    Modifier.border(6.dp,MaterialTheme.colors.primary,shape = RoundedCornerShape(8.dp))
-                else
                     Modifier
+                        .border(6.dp,MaterialTheme.colors.primary,shape = RoundedCornerShape(8.dp))
+                        .animateItemPlacement()
+                else
+                    Modifier.animateItemPlacement()
 
                 Box(boxModifier){
                     MemeItem(
