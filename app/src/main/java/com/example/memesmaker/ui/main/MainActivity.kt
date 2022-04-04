@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.memesmaker.R
+import com.example.memesmaker.ui.customMeme.CustomMemeActivity
 import com.example.memesmaker.ui.items.MemeItem
 import com.example.memesmaker.ui.memeEditor.MemeEditor
 import com.example.memesmaker.ui.theme.MemesMakerTheme
@@ -68,7 +69,7 @@ class MainActivity : ComponentActivity() {
                 text = stringResource(R.string.no_memes_yet)
             ) {
                 RoundedButton(text = stringResource(R.string.create)) {
-                    openEditorActivity()
+                    openActivity(MemeEditor::class.java)
                 }
             }
             return
@@ -83,8 +84,8 @@ class MainActivity : ComponentActivity() {
 
             item {
                 ChooseTemplate(
-                    onCustom = {},
-                    onStandard = ::openEditorActivity
+                    onCustom = { openActivity(CustomMemeActivity::class.java) },
+                    onStandard = {openActivity(MemeEditor::class.java)}
                 )
             }
 
@@ -115,7 +116,8 @@ class MainActivity : ComponentActivity() {
                             vm.select(meme.id)
                         },
                         onClick = {
-                            vm.select(meme.id)
+                            if (vm.isSelectionMode())
+                                vm.select(meme.id)
                         }
                     )
                 }
@@ -124,8 +126,8 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun openEditorActivity(){
-        val i=Intent(this,MemeEditor::class.java)
+    private fun <T> openActivity(activity:Class<T>){
+        val i=Intent(this,activity)
         startActivity(i)
     }
 
@@ -148,7 +150,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     AnimatedVisibility(visible = !vm.isSelectionMode()) {
-                        IconButton(onClick = ::openEditorActivity) {
+                        IconButton(onClick = { openActivity(MemeEditor::class.java) }) {
                             Icon(Icons.Default.Add, null)
                         }
                     }
@@ -158,7 +160,7 @@ class MainActivity : ComponentActivity() {
                 contentColor = MaterialTheme.colors.onSurface,
                 elevation = 0.dp,
                 navigationIcon = {
-                    IconButton(onClick = ::openEditorActivity) {
+                    IconButton(onClick = { openActivity(MemeEditor::class.java) }) {
                         Icon(Icons.Default.Menu, null)
                     }
                 }

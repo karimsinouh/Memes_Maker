@@ -17,6 +17,8 @@
 
         <activity android:name=".ui.memeEditor.MemeEditor"/>
 
+        <activity android:name=".ui.customMeme.CustomMemeActivity"/>
+
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true"

@@ -34,7 +34,7 @@ fun RowScope.CreateMemeTemplate(
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
             .background(background)
-            .clickable { }
+            .clickable { onClick() }
             .padding(32.dp)
             .weight(0.5f),
         verticalArrangement = Arrangement.Center,
