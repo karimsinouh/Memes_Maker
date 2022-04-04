@@ -18,4 +18,7 @@ interface MemeDao {
     @Query("SELECT * FROM MemeEntity ORDER BY id DESC")
     fun getAllMemes():LiveData<List<MemeEntity>>
 
+    @Query("DELETE FROM MemeEntity WHERE id in (:list)")
+    suspend fun deleteList(list:List<Int>)
+
 }

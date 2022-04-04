@@ -33,7 +33,7 @@ fun MemeItem(
                     },
                     onTap = {
                         onClick()
-                    }
+                    },
                 )
             },
         shape = RoundedCornerShape(8.dp),

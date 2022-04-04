@@ -128,7 +128,7 @@ class MainActivity : ComponentActivity() {
                 },
                 actions = {
                     AnimatedVisibility(visible = vm.isSelectionMode()) {
-                        IconButton(onClick = {}) {
+                        IconButton(onClick = vm::delete) {
                             Icon(Icons.Default.Delete, null)
                         }
                     }

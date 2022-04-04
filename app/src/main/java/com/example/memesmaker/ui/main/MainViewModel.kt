@@ -8,8 +8,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.memesmaker.data.Meme
 import com.example.memesmaker.database.MemesDatabase
+import kotlinx.coroutines.launch
 
 class MainViewModel(app: Application):AndroidViewModel(app) {
 
@@ -28,6 +30,13 @@ class MainViewModel(app: Application):AndroidViewModel(app) {
             selectedMemes.add(id)
         else
             selectedMemes.remove(id)
+    }
+
+    fun delete(){
+        viewModelScope.launch {
+            db.memes().deleteList(selectedMemes)
+            selectedMemes.clear()
+        }
     }
 
 }
