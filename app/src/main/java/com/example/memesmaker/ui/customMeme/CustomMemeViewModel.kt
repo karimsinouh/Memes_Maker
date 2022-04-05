@@ -2,17 +2,28 @@ package com.example.memesmaker.ui.customMeme
 
 import android.app.Application
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
+import android.view.Window
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.memesmaker.data.CustomMemeItems
+import com.example.memesmaker.data.ScreenState
 import com.example.memesmaker.data.Tools
+import com.example.memesmaker.database.MemeEntity
+import com.example.memesmaker.database.MemesDatabase
+import com.example.memesmaker.util.SaveMemeToStorage
+import com.example.memesmaker.util.ViewToBitmap
+import kotlinx.coroutines.launch
 
-class CustomMemeViewModel(app:Application) :AndroidViewModel(app) {
+class CustomMemeViewModel(private val app:Application) :AndroidViewModel(app) {
+
+    private val db = MemesDatabase.getInstance(app)
 
     val items = mutableStateListOf<CustomMemeItems>()
 
@@ -21,6 +32,12 @@ class CustomMemeViewModel(app:Application) :AndroidViewModel(app) {
     val currentTool = mutableStateOf(Tools.NONE)
 
     val selectedItem = mutableStateOf<CustomMemeItems?>(null)
+
+    var customMemeView by mutableStateOf<CustomMemeView?>(null)
+
+    var state by mutableStateOf(ScreenState.IDLE)
+
+    var uri:Uri?=null
 
     fun selectItem(item:CustomMemeItems){
         selectedItem.value = if (selectedItem.value?.timestamp==item.timestamp)
@@ -61,6 +78,30 @@ class CustomMemeViewModel(app:Application) :AndroidViewModel(app) {
             return
         items.remove(item)
         selectedItem.value=null
+    }
+
+    fun save(window:Window){
+        state=ScreenState.LOADING
+        ViewToBitmap(customMemeView!!,window){bitmap->
+
+            SaveMemeToStorage(app,bitmap){result->
+
+                result.onSuccess {
+                    uri=it
+                    val item=MemeEntity(0,it.toString())
+                    viewModelScope.launch {
+                        db.memes().put(item)
+                    }
+                    state=ScreenState.DONE
+                }
+
+                result.onFailure {
+                    state=ScreenState.ERROR.apply { message=it.message }
+                }
+
+            }
+
+        }
     }
 
 }

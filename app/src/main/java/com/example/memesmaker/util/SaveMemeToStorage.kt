@@ -17,7 +17,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 
-class SaveMemeToStorage {
+object SaveMemeToStorage {
 
     operator fun invoke(context: Context,bitmap:Bitmap,listener:(Result<Uri>)->Unit){
 

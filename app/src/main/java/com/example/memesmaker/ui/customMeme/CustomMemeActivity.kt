@@ -18,10 +18,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.viewinterop.AndroidView
+import com.example.memesmaker.R
+import com.example.memesmaker.data.ScreenState
 import com.example.memesmaker.data.Tools
 import com.example.memesmaker.ui.theme.MemesMakerTheme
 import com.example.memesmaker.util.ImagePicker
+import com.example.memesmaker.util.ShareImage
+import com.example.memesmaker.util.customComponents.CenterProgress
 import com.example.memesmaker.util.customComponents.DialogInput
+import com.example.memesmaker.util.customComponents.MessageScreen
+import com.example.memesmaker.util.customComponents.RoundedButton
 import com.example.memesmaker.util.toBitmap
 import com.theartofdev.edmodo.cropper.CropImage
 
@@ -38,7 +44,6 @@ class CustomMemeActivity:ComponentActivity() {
 
     private lateinit var launcher: ManagedActivityResultLauncher<String, Uri?>
 
-    private var customMemeView by mutableStateOf<CustomMemeView?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,12 +81,32 @@ class CustomMemeActivity:ComponentActivity() {
                     topBar = {
                         CustomMemeTopBar(
                             onBack = ::finish,
-                            onSave = {},
+                            onSave = { vm.save(window) },
                             onDelete = {vm.remove(vm.selectedItem.value)},
                             selectedItem = vm.selectedItem.value
                         )
                     },
-                    content = { Content() },
+                    content = {
+                        when(vm.state){
+                            ScreenState.LOADING -> CenterProgress()
+                            ScreenState.DONE -> MessageScreen(
+                                title = "Congrats!",
+                                text = getString(R.string.meme_created),
+                                button = {
+                                    RoundedButton(text = getString(R.string.share)) {
+                                        ShareImage(this,vm.uri)
+                                    }
+                                }
+                            )
+                            ScreenState.ERROR -> {
+                                MessageScreen(
+                                    title = "Error",
+                                    text = vm.state.message ?: "idk bro"
+                                )
+                            }
+                            ScreenState.IDLE -> Content()
+                        }
+                    },
                     backgroundColor = MaterialTheme.colors.surface
                 )
 
@@ -89,7 +114,7 @@ class CustomMemeActivity:ComponentActivity() {
 
         }
 
-        customMemeView=
+        vm.customMemeView=
             CustomMemeView(
                 context = this,
                 background = vm.background,
@@ -127,8 +152,8 @@ class CustomMemeActivity:ComponentActivity() {
 
             AndroidView(
                 factory = { _ ->
-                    if (customMemeView!=null)
-                        customMemeView!!
+                    if (vm.customMemeView!=null)
+                        vm.customMemeView!!
                     else
                         View(this@CustomMemeActivity)
                 }

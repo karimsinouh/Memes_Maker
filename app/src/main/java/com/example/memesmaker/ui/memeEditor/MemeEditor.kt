@@ -51,7 +51,6 @@ class MemeEditor: ComponentActivity() {
 
     private lateinit var memeCaptureView: MutableState<MemeTemplateCustomView>
 
-    private val saveMemeToStorage=SaveMemeToStorage()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -139,7 +138,7 @@ class MemeEditor: ComponentActivity() {
     private fun save(){
         vm.state=ScreenState.LOADING
         ViewToBitmap(memeCaptureView.value,window){
-            saveMemeToStorage(this,it){result->
+            SaveMemeToStorage(this,it){result->
 
                 result.onSuccess {uri->
                     vm.uri=uri
