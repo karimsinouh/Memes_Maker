@@ -3,6 +3,7 @@ package com.example.memesmaker.ui.customMeme
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -16,6 +17,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.viewinterop.AndroidView
 import com.example.memesmaker.data.Tools
 import com.example.memesmaker.ui.theme.MemesMakerTheme
 import com.example.memesmaker.util.ImagePicker
@@ -36,6 +38,8 @@ class CustomMemeActivity:ComponentActivity() {
 
     private lateinit var launcher: ManagedActivityResultLauncher<String, Uri?>
 
+    private var customMemeView by mutableStateOf<CustomMemeView?>(null)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -53,14 +57,16 @@ class CustomMemeActivity:ComponentActivity() {
 
                     val bitmap=uri.toBitmap(this)
 
-                    if (vm.currentTool==Tools.ADD_IMAGE)
+                    if (vm.currentTool.value==Tools.ADD_IMAGE)
                         vm.addImage(bitmap)
                     else
-                        vm.background=bitmap
+                        vm.background.value=bitmap
 
-                    vm.currentTool=Tools.NONE
+                    vm.currentTool.value=Tools.NONE
                 }
             }
+
+
 
             MemesMakerTheme {
 
@@ -71,8 +77,8 @@ class CustomMemeActivity:ComponentActivity() {
                         CustomMemeTopBar(
                             onBack = ::finish,
                             onSave = {},
-                            onDelete = {vm.remove(vm.selectedItem)},
-                            selectedItem = vm.selectedItem
+                            onDelete = {vm.remove(vm.selectedItem.value)},
+                            selectedItem = vm.selectedItem.value
                         )
                     },
                     content = { Content() },
@@ -83,32 +89,13 @@ class CustomMemeActivity:ComponentActivity() {
 
         }
 
-    }
-
-    @Composable
-    private fun Content(){
-
-        if(vm.currentTool==Tools.ADD_TEXT)
-            DialogInput(
-                title = "Add Text",
-                value = "",
-                button = "Add",
-                placeholder = "Text",
-                onConfirm = {
-                    vm.addText(it, Color.White)
-                    vm.currentTool=Tools.NONE
-                },
-                onDismiss = {vm.currentTool=Tools.NONE}
-            )
-
-
-        Column {
-
-            CustomMemeTemplate(
+        customMemeView=
+            CustomMemeView(
+                context = this,
                 background = vm.background,
                 items = vm.items,
                 onBackgroundClicked = {
-                    vm.currentTool= Tools.BACKGROUND
+                    vm.currentTool.value= Tools.BACKGROUND
                     launcher.launch("image/*")
                 },
                 onItemSelected = {
@@ -117,12 +104,42 @@ class CustomMemeActivity:ComponentActivity() {
                 selectedItem = vm.selectedItem
             )
 
+    }
+
+    @Composable
+    private fun Content(){
+
+        if(vm.currentTool.value==Tools.ADD_TEXT)
+            DialogInput(
+                title = "Add Text",
+                value = "",
+                button = "Add",
+                placeholder = "Text",
+                onConfirm = {
+                    vm.addText(it, Color.White)
+                    vm.currentTool.value=Tools.NONE
+                },
+                onDismiss = {vm.currentTool.value=Tools.NONE}
+            )
+
+
+        Column {
+
+            AndroidView(
+                factory = { _ ->
+                    if (customMemeView!=null)
+                        customMemeView!!
+                    else
+                        View(this@CustomMemeActivity)
+                }
+            )
+
             Divider()
 
             CustomMemeTools(
-                currentTool = vm.currentTool,
+                currentTool = vm.currentTool.value,
                 onToolClicked = {
-                    vm.currentTool = it
+                    vm.currentTool.value= it
                     when(it){
                         Tools.ADD_IMAGE->launcher.launch("image/*")
                         Tools.BACKGROUND->launcher.launch("image/*")

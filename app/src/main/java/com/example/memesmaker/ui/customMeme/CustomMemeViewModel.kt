@@ -16,14 +16,14 @@ class CustomMemeViewModel(app:Application) :AndroidViewModel(app) {
 
     val items = mutableStateListOf<CustomMemeItems>()
 
-    var background by mutableStateOf<Bitmap?>(null)
+    val background = mutableStateOf<Bitmap?>(null)
 
-    var currentTool by mutableStateOf(Tools.NONE)
+    val currentTool = mutableStateOf(Tools.NONE)
 
-    var selectedItem by mutableStateOf<CustomMemeItems?>(null)
+    val selectedItem = mutableStateOf<CustomMemeItems?>(null)
 
     fun selectItem(item:CustomMemeItems){
-        selectedItem = if (selectedItem?.timestamp==item.timestamp)
+        selectedItem.value = if (selectedItem.value?.timestamp==item.timestamp)
             null
         else
             item
@@ -60,7 +60,7 @@ class CustomMemeViewModel(app:Application) :AndroidViewModel(app) {
         if (item==null)
             return
         items.remove(item)
-        selectedItem=null
+        selectedItem.value=null
     }
 
 }
