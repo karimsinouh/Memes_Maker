@@ -67,7 +67,14 @@ class CustomMemeActivity:ComponentActivity() {
                 window.statusBarColor=MaterialTheme.colors.surface.toArgb()
 
                 Scaffold(
-                    topBar = { CustomMemeTopBar(onBack = ::finish, onSave = {}) },
+                    topBar = {
+                        CustomMemeTopBar(
+                            onBack = ::finish,
+                            onSave = {},
+                            onDelete = {vm.remove(vm.selectedItem)},
+                            selectedItem = vm.selectedItem
+                        )
+                    },
                     content = { Content() },
                     backgroundColor = MaterialTheme.colors.surface
                 )
@@ -103,7 +110,11 @@ class CustomMemeActivity:ComponentActivity() {
                 onBackgroundClicked = {
                     vm.currentTool= Tools.BACKGROUND
                     launcher.launch("image/*")
-                }
+                },
+                onItemSelected = {
+                    vm.selectItem(it)
+                },
+                selectedItem = vm.selectedItem
             )
 
             Divider()

@@ -1,6 +1,7 @@
 package com.example.memesmaker.ui.customMeme
 
 import android.graphics.Bitmap
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.rememberTransformableState
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -23,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.room.Delete
 import com.example.memesmaker.R
 import com.example.memesmaker.data.CustomMemeItems
 import com.example.memesmaker.data.Tools
@@ -33,7 +36,9 @@ import com.example.memesmaker.ui.memeEditor.ToolsButton
 @Composable
 fun CustomMemeTopBar(
     onBack:()->Unit,
-    onSave:()->Unit
+    onSave:()->Unit,
+    onDelete: ()->Unit,
+    selectedItem: CustomMemeItems?=null,
 ){
     Column {
         TopAppBar(
@@ -44,6 +49,12 @@ fun CustomMemeTopBar(
                 )
             },
             actions = {
+
+                AnimatedVisibility(visible = selectedItem != null) {
+                    IconButton(onClick = onDelete) {
+                        Icon(imageVector = Icons.Default.Delete, contentDescription = null)
+                    }
+                }
 
                 IconButton(onClick = onSave) {
                     Icon(
@@ -70,7 +81,9 @@ fun CustomMemeTopBar(
 
 @Composable
 fun TransformableText(
-    item:CustomMemeItems
+    item:CustomMemeItems,
+    isSelected:Boolean,
+    onClick:()->Unit,
 ) {
     // set up all transformation states
     var scale by remember { mutableStateOf(1f) }
@@ -81,40 +94,61 @@ fun TransformableText(
         rotation += rotationChange
         offset += offsetChange
     }
-    Text(
-        modifier= Modifier
-            //Drag and drop
-            /**
-            .pointerInput(Unit) {
-                detectDragGestures { change, dragAmount ->
+
+
+
+        val modifier=if (isSelected)
+                Modifier
+                    //Drag and drop
+                    /**
+                    .pointerInput(Unit) {
+                    detectDragGestures { change, dragAmount ->
                     change.consumeAllChanges()
                     offset = Offset(offset.x + dragAmount.x, offset.y + dragAmount.y)
-                }
-            }*/
-            // apply other transformations like rotation and zoom
-            // on the pizza slice emoji
-            .graphicsLayer(
-                scaleX = scale,
-                scaleY = scale,
-                rotationZ = rotation,
-                translationX = offset.x,
-                translationY = offset.y
-            )
-            // add transformable to listen to multitouch transformation events
-            // after offset
-            .transformable(state = state)
-            .background(Color.Black.copy(alpha = 0.5f))
-            .padding(12.dp),
-        text=item.text?:"",
-        fontWeight = FontWeight.Bold,
-        fontSize = 24.sp,
-        color=item.textColor?:Color.White
-    )
+                    }
+                    }*/
+                    // apply other transformations like rotation and zoom
+                    // on the pizza slice emoji
+                    .graphicsLayer(
+                        scaleX = scale,
+                        scaleY = scale,
+                        rotationZ = rotation,
+                        translationX = offset.x,
+                        translationY = offset.y
+                    )
+                    // add transformable to listen to multitouch transformation events
+                    // after offset
+                    .transformable(state = state)
+                    .border(4.dp, MaterialTheme.colors.primary)
+        else
+            Modifier
+                .graphicsLayer(
+                    scaleX = scale,
+                    scaleY = scale,
+                    rotationZ = rotation,
+                    translationX = offset.x,
+                    translationY = offset.y
+                )
+
+        Text(
+            modifier= modifier
+                .background(Color.Black.copy(alpha = 0.5f))
+                .clickable { onClick() }
+                .padding(12.dp),
+            text=item.text?:"",
+            fontWeight = FontWeight.Bold,
+            fontSize = 24.sp,
+            color=item.textColor?:Color.White
+        )
+
+
 }
 
 @Composable
 fun TransformableImage(
-    item:CustomMemeItems
+    item:CustomMemeItems,
+    isSelected:Boolean,
+    onClick:()->Unit,
 ) {
     // set up all transformation states
     var scale by remember { mutableStateOf(1f) }
@@ -125,30 +159,50 @@ fun TransformableImage(
         rotation += rotationChange
         offset += offsetChange
     }
-    Image(
-        modifier= Modifier
-            // apply other transformations like rotation and zoom
-            // on the pizza slice emoji
-            .graphicsLayer(
-                scaleX = scale,
-                scaleY = scale,
-                rotationZ = rotation,
-                translationX = offset.x,
-                translationY = offset.y
-            )
-            // add transformable to listen to multitouch transformation events
-            // after offset
-            .transformable(state = state),
-        bitmap = item.bitmap?.asImageBitmap()!!,
-        contentDescription = null
-    )
+
+
+        val modifier=if(isSelected)
+
+                Modifier
+                    // apply other transformations like rotation and zoom
+                    // on the pizza slice emoji
+                    .graphicsLayer(
+                        scaleX = scale,
+                        scaleY = scale,
+                        rotationZ = rotation,
+                        translationX = offset.x,
+                        translationY = offset.y
+                    )
+                    // add transformable to listen to multitouch transformation events
+                    // after offset
+                    .transformable(state = state)
+                    .border(4.dp, MaterialTheme.colors.primary)
+
+        else
+            Modifier
+                .graphicsLayer(
+                    scaleX = scale,
+                    scaleY = scale,
+                    rotationZ = rotation,
+                    translationX = offset.x,
+                    translationY = offset.y
+                )
+
+        Image(
+            modifier= modifier.clickable { onClick() },
+            bitmap = item.bitmap?.asImageBitmap()!!,
+            contentDescription = null
+        )
+
 }
 
 @Composable
 fun CustomMemeTemplate(
     background: Bitmap?=null,
     items:List<CustomMemeItems>,
-    onBackgroundClicked:()->Unit
+    selectedItem:CustomMemeItems?=null,
+    onBackgroundClicked:()->Unit,
+    onItemSelected:(CustomMemeItems)->Unit
 ) {
     BoxWithConstraints {
 
@@ -174,10 +228,13 @@ fun CustomMemeTemplate(
 
         //items
         items.forEach {
+
+            val isSelected=it.timestamp==selectedItem?.timestamp
+
             if (it.isText())
-                TransformableText(it)
+                TransformableText(it,isSelected){onItemSelected(it)}
             else
-                TransformableImage(it)
+                TransformableImage(it,isSelected){onItemSelected(it)}
         }
 
 

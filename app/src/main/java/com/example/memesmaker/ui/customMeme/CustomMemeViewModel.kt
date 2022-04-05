@@ -20,6 +20,15 @@ class CustomMemeViewModel(app:Application) :AndroidViewModel(app) {
 
     var currentTool by mutableStateOf(Tools.NONE)
 
+    var selectedItem by mutableStateOf<CustomMemeItems?>(null)
+
+    fun selectItem(item:CustomMemeItems){
+        selectedItem = if (selectedItem?.timestamp==item.timestamp)
+            null
+        else
+            item
+    }
+
     fun addText(
         text:String,
         color:Color
@@ -47,8 +56,11 @@ class CustomMemeViewModel(app:Application) :AndroidViewModel(app) {
         items.add(item)
     }
 
-    fun remove(item:CustomMemeItems){
+    fun remove(item:CustomMemeItems?){
+        if (item==null)
+            return
         items.remove(item)
+        selectedItem=null
     }
 
 }
