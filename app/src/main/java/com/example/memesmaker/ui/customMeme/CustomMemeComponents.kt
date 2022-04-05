@@ -1,15 +1,34 @@
 package com.example.memesmaker.ui.customMeme
 
-import androidx.compose.foundation.layout.Column
+import android.graphics.Bitmap
+import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.transformable
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.consumeAllChanges
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.memesmaker.R
+import com.example.memesmaker.data.CustomMemeItems
+import com.example.memesmaker.data.Tools
+import com.example.memesmaker.data.getAllTools
+import com.example.memesmaker.data.getCustomMemeTools
+import com.example.memesmaker.ui.memeEditor.ToolsButton
 
 @Composable
 fun CustomMemeTopBar(
@@ -45,5 +64,143 @@ fun CustomMemeTopBar(
             }
         )
         Divider()
+    }
+}
+
+
+@Composable
+fun TransformableText(
+    item:CustomMemeItems
+) {
+    // set up all transformation states
+    var scale by remember { mutableStateOf(1f) }
+    var rotation by remember { mutableStateOf(0f) }
+    var offset by remember { mutableStateOf(Offset.Zero) }
+    val state = rememberTransformableState { zoomChange, offsetChange, rotationChange ->
+        scale *= zoomChange
+        rotation += rotationChange
+        offset += offsetChange
+    }
+    Text(
+        modifier= Modifier
+            //Drag and drop
+            /**
+            .pointerInput(Unit) {
+                detectDragGestures { change, dragAmount ->
+                    change.consumeAllChanges()
+                    offset = Offset(offset.x + dragAmount.x, offset.y + dragAmount.y)
+                }
+            }*/
+            // apply other transformations like rotation and zoom
+            // on the pizza slice emoji
+            .graphicsLayer(
+                scaleX = scale,
+                scaleY = scale,
+                rotationZ = rotation,
+                translationX = offset.x,
+                translationY = offset.y
+            )
+            // add transformable to listen to multitouch transformation events
+            // after offset
+            .transformable(state = state)
+            .background(Color.Black.copy(alpha = 0.5f))
+            .padding(12.dp),
+        text=item.text?:"",
+        fontWeight = FontWeight.Bold,
+        fontSize = 24.sp,
+        color=item.textColor?:Color.White
+    )
+}
+
+@Composable
+fun TransformableImage(
+    item:CustomMemeItems
+) {
+    // set up all transformation states
+    var scale by remember { mutableStateOf(1f) }
+    var rotation by remember { mutableStateOf(0f) }
+    var offset by remember { mutableStateOf(Offset.Zero) }
+    val state = rememberTransformableState { zoomChange, offsetChange, rotationChange ->
+        scale *= zoomChange
+        rotation += rotationChange
+        offset += offsetChange
+    }
+    Image(
+        modifier= Modifier
+            // apply other transformations like rotation and zoom
+            // on the pizza slice emoji
+            .graphicsLayer(
+                scaleX = scale,
+                scaleY = scale,
+                rotationZ = rotation,
+                translationX = offset.x,
+                translationY = offset.y
+            )
+            // add transformable to listen to multitouch transformation events
+            // after offset
+            .transformable(state = state),
+        bitmap = item.bitmap?.asImageBitmap()!!,
+        contentDescription = null
+    )
+}
+
+@Composable
+fun CustomMemeTemplate(
+    background: Bitmap?=null,
+    items:List<CustomMemeItems>,
+    onBackgroundClicked:()->Unit
+) {
+    BoxWithConstraints {
+
+        if (background==null)
+            Image(
+                painter = painterResource(id = R.drawable.ic_launcher_background),
+                contentDescription = null,
+                modifier= Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .clickable { onBackgroundClicked() },
+                contentScale = ContentScale.Crop
+            )
+        else
+            Image(
+                bitmap = background.asImageBitmap(),
+                contentDescription = null,
+                modifier= Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+                contentScale = ContentScale.Crop
+            )
+
+        //items
+        items.forEach {
+            if (it.isText())
+                TransformableText(it)
+            else
+                TransformableImage(it)
+        }
+
+
+    }
+}
+
+
+@Composable
+fun CustomMemeTools(
+    currentTool: Tools,
+    onToolClicked:(Tools)->Unit,
+) {
+    val scrollState = rememberScrollState()
+    Row(
+        modifier= Modifier
+            .horizontalScroll(scrollState)
+            .fillMaxWidth(),
+    ) {
+        getCustomMemeTools().forEach {
+            val isSelected=currentTool==it
+            ToolsButton(tool = it,isSelected = isSelected) {
+                onToolClicked(it)
+            }
+        }
     }
 }

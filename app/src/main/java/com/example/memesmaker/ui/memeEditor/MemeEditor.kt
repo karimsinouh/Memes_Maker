@@ -188,6 +188,7 @@ class MemeEditor: ComponentActivity() {
             Tools.PADDING -> PaddingTool()
             Tools.IMAGE_HEIGHT -> ImageHeightTool()
             Tools.CORNERS -> CornersTool()
+            else -> Unit
         }
 
 
