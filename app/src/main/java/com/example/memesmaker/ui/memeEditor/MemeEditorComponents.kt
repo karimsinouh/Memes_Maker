@@ -47,7 +47,7 @@ fun MemeTemplate(
             fontSize = meme.textSize?.sp?:24.sp,
             modifier = Modifier.clickable {
                 onTextClicked()
-            },
+            }.fillMaxWidth(),
             color = contentColor
         )
 
