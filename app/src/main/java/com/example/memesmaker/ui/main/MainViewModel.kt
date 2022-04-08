@@ -10,6 +10,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.memesmaker.data.Meme
+import com.example.memesmaker.database.MemeEntity
 import com.example.memesmaker.database.MemesDatabase
 import kotlinx.coroutines.launch
 
@@ -36,6 +37,12 @@ class MainViewModel(app: Application):AndroidViewModel(app) {
         viewModelScope.launch {
             db.memes().deleteList(selectedMemes)
             selectedMemes.clear()
+        }
+    }
+
+    fun delete(meme:MemeEntity){
+        viewModelScope.launch {
+            db.memes().delete(meme)
         }
     }
 

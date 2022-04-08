@@ -1,6 +1,7 @@
 package com.example.memesmaker.ui.main
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,8 +31,10 @@ import androidx.compose.ui.unit.dp
 import com.example.memesmaker.R
 import com.example.memesmaker.ui.customMeme.CustomMemeActivity
 import com.example.memesmaker.ui.items.MemeItem
+import com.example.memesmaker.ui.items.SwipeableMemeItem
 import com.example.memesmaker.ui.memeEditor.MemeEditor
 import com.example.memesmaker.ui.theme.MemesMakerTheme
+import com.example.memesmaker.util.ShareImage
 import com.example.memesmaker.util.customComponents.MessageScreen
 import com.example.memesmaker.util.customComponents.RoundedButton
 import com.example.memesmaker.util.customComponents.customStickyHeader
@@ -110,7 +113,7 @@ class MainActivity : ComponentActivity() {
                     Modifier.animateItemPlacement()
 
                 Box(boxModifier){
-                    MemeItem(
+                    SwipeableMemeItem(
                         memeEntity = meme,
                         onLongClick = {
                             vm.select(meme.id)
@@ -118,6 +121,12 @@ class MainActivity : ComponentActivity() {
                         onClick = {
                             if (vm.isSelectionMode())
                                 vm.select(meme.id)
+                        },
+                        onDelete = {
+                                   vm.delete(meme)
+                        },
+                        onShare = {
+                            ShareImage(this@MainActivity, Uri.parse(meme.memePath))
                         }
                     )
                 }
