@@ -1,12 +1,9 @@
-package com.example.memesmaker.ui.memeEditor
+package com.example.memesmaker.ui.standardMeme
 
 import android.app.Activity
-import android.app.Instrumentation
 import android.content.Intent
-import android.content.pm.LauncherActivityInfo
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -19,26 +16,25 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.memesmaker.R
 import com.example.memesmaker.data.ScreenState
 import com.example.memesmaker.data.Tools
 import com.example.memesmaker.ui.theme.MemesMakerTheme
 import com.example.memesmaker.util.ImagePicker
-import com.example.memesmaker.util.SaveMemeToStorage
 import com.example.memesmaker.util.ShareImage
-import com.example.memesmaker.util.ViewToBitmap
+import com.example.memesmaker.util.ads.AnchoredAdaptiveBanner
 import com.example.memesmaker.util.customComponents.CenterProgress
 import com.example.memesmaker.util.customComponents.DialogInput
 import com.example.memesmaker.util.customComponents.MessageScreen
 import com.example.memesmaker.util.customComponents.RoundedButton
 import com.theartofdev.edmodo.cropper.CropImage
-import com.theartofdev.edmodo.cropper.CropImageView
 
-class MemeEditor: ComponentActivity() {
+class StandardMemeActivity: ComponentActivity() {
 
 
-    private val vm by viewModels<MemeEditorViewModel>()
+    private val vm by viewModels<StandardMemeViewModel>()
 
     private val imagePicker by lazy {
         ImagePicker(this)
@@ -85,7 +81,7 @@ class MemeEditor: ComponentActivity() {
                         when(vm.state){
                             ScreenState.LOADING -> CenterProgress()
                             ScreenState.DONE -> MessageScreen(
-                                title = "Congrats!",
+                                title = stringResource(id = R.string.congrats),
                                 text = getString(R.string.meme_created),
                                 button = {
                                     RoundedButton(text = getString(R.string.share)) {
@@ -95,14 +91,20 @@ class MemeEditor: ComponentActivity() {
                             )
                             ScreenState.ERROR -> {
                                 MessageScreen(
-                                    title = "Error",
+                                    title = stringResource(id = R.string.error),
                                     text = vm.state.message ?: "idk bro"
                                 )
                             }
                             ScreenState.IDLE -> Content()
                         }
                     },
-                    backgroundColor = MaterialTheme.colors.surface
+                    backgroundColor = MaterialTheme.colors.surface,
+                    bottomBar = {
+                        AnchoredAdaptiveBanner(
+                            adUnitId = stringResource(id = R.string.standard_meme_banner),
+                            adRequest = vm.adRequest
+                        )
+                    }
                 )
 
             }
@@ -126,32 +128,15 @@ class MemeEditor: ComponentActivity() {
     private fun ThisTopBar() {
         MemeEditorAppBar(
             onBack = ::finish,
-            onSave = ::save,
+            onSave = {
+                     vm.save(memeCaptureView.value,this)
+            },
             title = vm.meme.value.memeName?:"",
             isDark = vm.meme.value.dark,
             onDarkSwitched = {
                 vm.onDarkSwitched(it)
             }
         )
-    }
-
-    private fun save(){
-        vm.state=ScreenState.LOADING
-        ViewToBitmap(memeCaptureView.value,window){
-            SaveMemeToStorage(this,it){result->
-
-                result.onSuccess {uri->
-                    vm.uri=uri
-                    vm.storeMeme()
-                    vm.state=ScreenState.DONE
-                }
-
-                result.onFailure {
-                    vm.state=ScreenState.ERROR.apply { message=it.message }
-                }
-
-            }
-        }
     }
 
     @Composable

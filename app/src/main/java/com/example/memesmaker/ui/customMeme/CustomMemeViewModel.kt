@@ -1,9 +1,11 @@
 package com.example.memesmaker.ui.customMeme
 
+import android.app.Activity
 import android.app.Application
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import android.view.Window
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -12,6 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.memesmaker.R
 import com.example.memesmaker.data.CustomMemeItems
 import com.example.memesmaker.data.ScreenState
 import com.example.memesmaker.data.Tools
@@ -19,9 +22,36 @@ import com.example.memesmaker.database.MemeEntity
 import com.example.memesmaker.database.MemesDatabase
 import com.example.memesmaker.util.SaveMemeToStorage
 import com.example.memesmaker.util.ViewToBitmap
+import com.example.memesmaker.util.ads.GetAdRequest
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import kotlinx.coroutines.launch
 
 class CustomMemeViewModel(private val app:Application) :AndroidViewModel(app) {
+
+    //ads
+    val adRequest= GetAdRequest(app)
+    var interstitial: InterstitialAd?=null
+
+    init {
+        InterstitialAd.load(
+            app,
+            app.getString(R.string.custom_meme_interstitial),
+            adRequest,
+            object : InterstitialAdLoadCallback() {
+                override fun onAdLoaded(p0: InterstitialAd) {
+                    super.onAdLoaded(p0)
+                    interstitial=p0
+                }
+
+                override fun onAdFailedToLoad(p0: LoadAdError) {
+                    super.onAdFailedToLoad(p0)
+                    Log.d("CustomMemeViewModel",p0.message)
+                }
+            }
+        )
+    }
 
     private val db = MemesDatabase.getInstance(app)
 
@@ -80,15 +110,17 @@ class CustomMemeViewModel(private val app:Application) :AndroidViewModel(app) {
         selectedItem.value=null
     }
 
-    fun save(window:Window){
+    fun save(activity: Activity){
         if (items.isEmpty()){
             state=ScreenState.ERROR.apply { message= "You need to add at least one text or image to save this meme" }
             return
         }
 
+        interstitial?.show(activity)
+
         state=ScreenState.LOADING
         selectedItem.value=null
-        ViewToBitmap(customMemeView!!,window){bitmap->
+        ViewToBitmap(customMemeView!!,activity.window){bitmap->
 
             SaveMemeToStorage(app,bitmap){result->
 

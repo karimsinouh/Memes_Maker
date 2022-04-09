@@ -12,9 +12,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.memesmaker.data.Meme
 import com.example.memesmaker.database.MemeEntity
 import com.example.memesmaker.database.MemesDatabase
+import com.example.memesmaker.util.ads.GetAdRequest
+import com.google.android.gms.ads.AdRequest
 import kotlinx.coroutines.launch
 
 class MainViewModel(app: Application):AndroidViewModel(app) {
+
+    //adRequest
+    val adRequest=GetAdRequest(app)
 
     private val db = MemesDatabase.getInstance(app)
 

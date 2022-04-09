@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_id">ca-app-pub-3940256099942544~3347511713</string>
+
+
+    <string name="main_activity_banner">ca-app-pub-3940256099942544/6300978111</string>
+
+
+    <string name="standard_meme_interstitial">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="standard_meme_banner">ca-app-pub-3940256099942544/6300978111</string>
+
+    <string name="custom_meme_interstitial">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="custom_meme_banner">ca-app-pub-3940256099942544/6300978111</string>
+
+</resources>

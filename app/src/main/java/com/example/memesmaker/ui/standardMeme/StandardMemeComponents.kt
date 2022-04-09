@@ -1,11 +1,10 @@
-package com.example.memesmaker.ui.memeEditor
+package com.example.memesmaker.ui.standardMeme
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,8 +22,6 @@ import com.example.memesmaker.R
 import com.example.memesmaker.data.Meme
 import com.example.memesmaker.data.Tools
 import com.example.memesmaker.data.getAllTools
-import com.example.memesmaker.ui.theme.DarkMemeBackground
-import com.example.memesmaker.ui.theme.LightMemeBackground
 
 @Composable
 fun MemeTemplate(

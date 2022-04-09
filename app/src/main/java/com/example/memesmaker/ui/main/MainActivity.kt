@@ -21,9 +21,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,11 +29,11 @@ import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.memesmaker.R
 import com.example.memesmaker.ui.customMeme.CustomMemeActivity
-import com.example.memesmaker.ui.items.MemeItem
 import com.example.memesmaker.ui.items.SwipeableMemeItem
-import com.example.memesmaker.ui.memeEditor.MemeEditor
+import com.example.memesmaker.ui.standardMeme.StandardMemeActivity
 import com.example.memesmaker.ui.theme.MemesMakerTheme
 import com.example.memesmaker.util.ShareImage
+import com.example.memesmaker.util.ads.AnchoredAdaptiveBanner
 import com.example.memesmaker.util.customComponents.MessageScreen
 import com.example.memesmaker.util.customComponents.RoundedButton
 import com.example.memesmaker.util.customComponents.customStickyHeader
@@ -48,7 +46,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        installSplashScreen()
+        installSplashScreen().apply{
+            this.setKeepOnScreenCondition{
+                vm.memesList.value!=null
+            }
+        }
 
         setContent {
             MemesMakerTheme {
@@ -59,6 +61,12 @@ class MainActivity : ComponentActivity() {
                     content={Content()},
                     topBar = { MainTopBar() },
                     backgroundColor = MaterialTheme.colors.background,
+                    bottomBar = {
+                        AnchoredAdaptiveBanner(
+                            adUnitId = stringResource(id = R.string.main_activity_banner),
+                            adRequest = vm.adRequest
+                        )
+                    }
                 )
             }
         }
@@ -76,7 +84,7 @@ class MainActivity : ComponentActivity() {
                 text = stringResource(R.string.no_memes_yet)
             ) {
                 RoundedButton(text = stringResource(R.string.create)) {
-                    openActivity(MemeEditor::class.java)
+                    openActivity(StandardMemeActivity::class.java)
                 }
             }
             return
@@ -92,7 +100,7 @@ class MainActivity : ComponentActivity() {
             item {
                 ChooseTemplate(
                     onCustom = { openActivity(CustomMemeActivity::class.java) },
-                    onStandard = {openActivity(MemeEditor::class.java)}
+                    onStandard = {openActivity(StandardMemeActivity::class.java)}
                 )
             }
 
@@ -163,7 +171,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     AnimatedVisibility(visible = !vm.isSelectionMode()) {
-                        IconButton(onClick = { openActivity(MemeEditor::class.java) }) {
+                        IconButton(onClick = { openActivity(StandardMemeActivity::class.java) }) {
                             Icon(Icons.Default.Add, null)
                         }
                     }
@@ -173,7 +181,7 @@ class MainActivity : ComponentActivity() {
                 contentColor = MaterialTheme.colors.onSurface,
                 elevation = 0.dp,
                 navigationIcon = {
-                    IconButton(onClick = { openActivity(MemeEditor::class.java) }) {
+                    IconButton(onClick = { openActivity(StandardMemeActivity::class.java) }) {
                         Icon(Icons.Default.Menu, null)
                     }
                 }

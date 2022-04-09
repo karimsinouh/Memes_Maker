@@ -25,6 +25,7 @@ import com.example.memesmaker.data.Tools
 import com.example.memesmaker.ui.theme.MemesMakerTheme
 import com.example.memesmaker.util.ImagePicker
 import com.example.memesmaker.util.ShareImage
+import com.example.memesmaker.util.ads.AnchoredAdaptiveBanner
 import com.example.memesmaker.util.customComponents.CenterProgress
 import com.example.memesmaker.util.customComponents.DialogInput
 import com.example.memesmaker.util.customComponents.MessageScreen
@@ -83,7 +84,7 @@ class CustomMemeActivity:ComponentActivity() {
                         if(vm.state==ScreenState.IDLE)
                             CustomMemeTopBar(
                                 onBack = ::finish,
-                                onSave = { vm.save(window) },
+                                onSave = { vm.save(this) },
                                 onDelete = {vm.remove(vm.selectedItem.value)},
                                 selectedItem = vm.selectedItem.value
                             )
@@ -114,7 +115,13 @@ class CustomMemeActivity:ComponentActivity() {
                             ScreenState.IDLE -> Content()
                         }
                     },
-                    backgroundColor = MaterialTheme.colors.surface
+                    backgroundColor = MaterialTheme.colors.surface,
+                    bottomBar = {
+                        AnchoredAdaptiveBanner(
+                            adUnitId = stringResource(id = R.string.custom_meme_banner),
+                            adRequest = vm.adRequest
+                        )
+                    }
                 )
 
             }

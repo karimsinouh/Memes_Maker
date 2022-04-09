@@ -3,7 +3,6 @@ package com.example.memesmaker.ui.customMeme
 import android.graphics.Bitmap
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.*
@@ -17,21 +16,17 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.consumeAllChanges
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.room.Delete
 import com.example.memesmaker.R
 import com.example.memesmaker.data.CustomMemeItems
 import com.example.memesmaker.data.Tools
-import com.example.memesmaker.data.getAllTools
 import com.example.memesmaker.data.getCustomMemeTools
-import com.example.memesmaker.ui.memeEditor.ToolsButton
+import com.example.memesmaker.ui.standardMeme.ToolsButton
 
 @Composable
 fun CustomMemeTopBar(
