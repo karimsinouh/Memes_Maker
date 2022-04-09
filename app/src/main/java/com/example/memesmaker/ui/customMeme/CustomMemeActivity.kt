@@ -103,7 +103,12 @@ class CustomMemeActivity:ComponentActivity() {
                             ScreenState.ERROR -> {
                                 MessageScreen(
                                     title = getString(R.string.error),
-                                    text = vm.state.message ?: "idk bro"
+                                    text = vm.state.message ?: "idk bro",
+                                    button={
+                                        RoundedButton(text = getString(R.string.okkay)) {
+                                            vm.state=ScreenState.IDLE
+                                        }
+                                    }
                                 )
                             }
                             ScreenState.IDLE -> Content()

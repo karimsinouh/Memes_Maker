@@ -95,6 +95,8 @@ fun SwipeableMemeItem(
                     .fillMaxWidth()
                     .wrapContentHeight(),
                 contentScale = ContentScale.Crop,
+                placeholder = painterResource(id = R.drawable.placeholder),
+                error = painterResource(id = R.drawable.placeholder),
             )
         }
 
