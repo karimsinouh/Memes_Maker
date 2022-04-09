@@ -10,4 +10,9 @@
     <string name="meme_created">Your meme has been successfully created, you can share it with your friends if you want</string>
     <string name="custom">Custom</string>
     <string name="standard">Standard</string>
+    <string name="error">Error</string>
+    <string name="congrats">Congrats!</string>
+    <string name="add_text">Add Text</string>
+    <string name="add">Add</string>
+    <string name="text">Text</string>
 </resources>

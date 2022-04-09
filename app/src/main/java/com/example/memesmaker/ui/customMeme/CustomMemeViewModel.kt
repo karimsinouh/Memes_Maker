@@ -81,7 +81,13 @@ class CustomMemeViewModel(private val app:Application) :AndroidViewModel(app) {
     }
 
     fun save(window:Window){
+        if (items.isEmpty()){
+            state=ScreenState.ERROR.apply { message= "You need to add at least one text or image to save this meme" }
+            return
+        }
+
         state=ScreenState.LOADING
+        selectedItem.value=null
         ViewToBitmap(customMemeView!!,window){bitmap->
 
             SaveMemeToStorage(app,bitmap){result->

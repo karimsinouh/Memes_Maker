@@ -17,6 +17,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.memesmaker.R
 import com.example.memesmaker.data.ScreenState
@@ -79,18 +80,19 @@ class CustomMemeActivity:ComponentActivity() {
 
                 Scaffold(
                     topBar = {
-                        CustomMemeTopBar(
-                            onBack = ::finish,
-                            onSave = { vm.save(window) },
-                            onDelete = {vm.remove(vm.selectedItem.value)},
-                            selectedItem = vm.selectedItem.value
-                        )
+                        if(vm.state==ScreenState.IDLE)
+                            CustomMemeTopBar(
+                                onBack = ::finish,
+                                onSave = { vm.save(window) },
+                                onDelete = {vm.remove(vm.selectedItem.value)},
+                                selectedItem = vm.selectedItem.value
+                            )
                     },
                     content = {
                         when(vm.state){
                             ScreenState.LOADING -> CenterProgress()
                             ScreenState.DONE -> MessageScreen(
-                                title = "Congrats!",
+                                title = getString(R.string.congrats),
                                 text = getString(R.string.meme_created),
                                 button = {
                                     RoundedButton(text = getString(R.string.share)) {
@@ -100,7 +102,7 @@ class CustomMemeActivity:ComponentActivity() {
                             )
                             ScreenState.ERROR -> {
                                 MessageScreen(
-                                    title = "Error",
+                                    title = getString(R.string.error),
                                     text = vm.state.message ?: "idk bro"
                                 )
                             }
@@ -136,10 +138,10 @@ class CustomMemeActivity:ComponentActivity() {
 
         if(vm.currentTool.value==Tools.ADD_TEXT)
             DialogInput(
-                title = "Add Text",
+                title = stringResource(R.string.add_text),
                 value = "",
-                button = "Add",
-                placeholder = "Text",
+                button = stringResource(R.string.add),
+                placeholder = stringResource(R.string.text),
                 onConfirm = {
                     vm.addText(it, Color.White)
                     vm.currentTool.value=Tools.NONE
