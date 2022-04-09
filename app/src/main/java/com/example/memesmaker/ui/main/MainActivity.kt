@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.memesmaker.R
 import com.example.memesmaker.ui.customMeme.CustomMemeActivity
 import com.example.memesmaker.ui.items.MemeItem
@@ -46,6 +47,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        installSplashScreen()
+
         setContent {
             MemesMakerTheme {
 
