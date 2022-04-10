@@ -180,11 +180,6 @@ class MainActivity : ComponentActivity() {
                 backgroundColor = MaterialTheme.colors.surface,
                 contentColor = MaterialTheme.colors.onSurface,
                 elevation = 0.dp,
-                navigationIcon = {
-                    IconButton(onClick = { openActivity(StandardMemeActivity::class.java) }) {
-                        Icon(Icons.Default.Menu, null)
-                    }
-                }
             )
             Divider()
         }

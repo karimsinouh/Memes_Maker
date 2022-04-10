@@ -5,9 +5,9 @@
 
             <item name="splashScreenIconSize">24.dp</item>
 
-            <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_icon</item>
+            <item name="windowSplashScreenAnimatedIcon">@drawable/app_icon</item>
 
-            <item name="android:windowSplashScreenBackground" tools:targetApi="s">#191919</item>
+            <item name="android:windowSplashScreenBackground" tools:targetApi="s">#1C1C1C</item>
 
             <item name="postSplashScreenTheme">@style/Theme.MemesMaker.NoActionBar</item>
 
