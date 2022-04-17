@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_id">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="app_id">ca-app-pub-3140105035804907~4786429803</string>
 
 
-    <string name="main_activity_banner">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="main_activity_banner">ca-app-pub-3140105035804907/1962687855</string>
 
 
-    <string name="standard_meme_interstitial">ca-app-pub-3940256099942544/1033173712</string>
-    <string name="standard_meme_banner">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="standard_meme_interstitial">ca-app-pub-3140105035804907/7298775018</string>
+    <string name="standard_meme_banner">ca-app-pub-3140105035804907/3551101699</string>
 
-    <string name="custom_meme_interstitial">ca-app-pub-3940256099942544/1033173712</string>
-    <string name="custom_meme_banner">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="custom_meme_interstitial">ca-app-pub-3140105035804907/4672611677</string>
+    <string name="custom_meme_banner">ca-app-pub-3140105035804907/3647342604</string>
 
 </resources>

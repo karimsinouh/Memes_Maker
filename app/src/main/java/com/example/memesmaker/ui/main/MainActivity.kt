@@ -37,6 +37,9 @@ import com.example.memesmaker.util.ads.AnchoredAdaptiveBanner
 import com.example.memesmaker.util.customComponents.MessageScreen
 import com.example.memesmaker.util.customComponents.RoundedButton
 import com.example.memesmaker.util.customComponents.customStickyHeader
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
+import java.util.*
 
 class MainActivity : ComponentActivity() {
 
@@ -70,6 +73,8 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+
+        requestTestAds()
     }
 
     @OptIn(ExperimentalFoundationApi::class)
@@ -183,5 +188,10 @@ class MainActivity : ComponentActivity() {
             )
             Divider()
         }
+    }
+
+    private fun requestTestAds(){
+        val configurations= RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("CB7256F8AC9A39A0DAC57B133AAC720F"))
+        MobileAds.setRequestConfiguration(configurations.build())
     }
 }
