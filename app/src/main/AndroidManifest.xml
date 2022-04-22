@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.memesmaker">
+    package="com.karimsinouh.memesmaker">
 
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -19,12 +19,12 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/app_id"/>
 
-        <activity android:name=".ui.standardMeme.StandardMemeActivity"/>
+        <activity android:name="com.karimsinouh.memesmaker.ui.standardMeme.StandardMemeActivity"/>
 
-        <activity android:name=".ui.customMeme.CustomMemeActivity"/>
+        <activity android:name="com.karimsinouh.memesmaker.ui.customMeme.CustomMemeActivity"/>
 
         <activity
-            android:name=".ui.main.MainActivity"
+            android:name="com.karimsinouh.memesmaker.ui.main.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Splash">
